@@ -1,30 +1,28 @@
 console.log('Content script works!');
-const { Configuration, OpenAIApi } = require('openai');
+import OpenAI from 'openai';
 
 let openaiClient;
 
 chrome.storage.local.get(['openaiApiKey']).then(({ openaiApiKey }) => {
-  const configuration = new Configuration({
+  openaiClient = new OpenAI({
     apiKey: openaiApiKey,
+    dangerouslyAllowBrowser: true,
   });
-  openaiClient = new OpenAIApi(configuration);
 });
 
-chrome.storage.onChange.addListener((changes) => {
+chrome.storage.onChanged.addListener((changes) => {
   for (let [key, { newValue }] of Object.entries(changes)) {
     if (key !== 'openaiApiKey') continue;
-    openaiClient = new OpenAIApi(
-      new Configuration({
-        apiKey: newValue,
-      })
-    );
+    openaiClient = new OpenAI({
+      apiKey: newValue,
+      dangerouslyAllowBrowser: true,
+    });
   }
 });
 
 console.log('HELLOOOOOOOO???????????????');
 
-document.addEventListener('mouseup', async (event) => {
-  console.log('where are wee????');
+window.addEventListener('mouseup', async (event) => {
   //   const hoveredElement = event.target;
 
   //   if (hoveredElement && hoveredElement.innerText) {
@@ -34,22 +32,22 @@ document.addEventListener('mouseup', async (event) => {
   //       chrome.runtime.sendMessage({ type: 'logText', text: hoveredText });
   //     }
   //   }
-  if (window.getSelection) {
+  if (window.getSelection && window.getSelection().toString() != '') {
     // chrome.runtime.sendMessage({
     //   type: 'logText',
     //   text: window.getSelection().toString(),
     // });
-    console.log('r we here?');
 
     if (!openaiClient) return;
-    console.log('hello');
-    const completion = await openaiClient.createCompletion({
+    const completion = await openaiClient.completions.create({
       model: 'text-davinci-003',
       prompt:
-        'A user has just highlighted "' +
+        'A user has entered "' +
         window.getSelection().toString() +
-        '". With this content, please pretend you are a tutor and define/explain the concept/term. Do this using simple terms and as little words as possible.',
+        '". Pretend you are a tutor and define/explain the concept/term with simple terms and as little words as possible.',
+      max_tokens: 100,
     });
-    console.log(completion.data.choices[0].text);
+    console.log(completion.choices[0].text);
+    console.log('Tokens used: ' + completion['usage']['total_tokens']);
   }
 });
