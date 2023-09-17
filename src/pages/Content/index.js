@@ -20,8 +20,6 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
-console.log('HELLOOOOOOOO???????????????');
-
 window.addEventListener('mouseup', async (event) => {
   //   const hoveredElement = event.target;
 
@@ -42,9 +40,9 @@ window.addEventListener('mouseup', async (event) => {
     const completion = await openaiClient.completions.create({
       model: 'text-davinci-003',
       prompt:
-        'A user has entered "' +
+        'Read the following job posting: "' +
         window.getSelection().toString() +
-        '". Pretend you are a tutor and define/explain the concept/term with simple terms and as little words as possible.',
+        '". Return all of the tech stack related keywords in an array.',
       max_tokens: 100,
     });
     console.log(completion.choices[0].text);

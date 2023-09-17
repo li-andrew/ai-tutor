@@ -25,5 +25,5 @@
       "matches": []
     }
   ],
-  "permissions": ["activeTab", "scripting", "storage"]
+  "permissions": ["activeTab", "scripting", "storage", "http://127.0.0.1/*"]
 }

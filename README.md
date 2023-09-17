@@ -6,6 +6,8 @@
 
 A chrome extension that uses OpenAI to explain terms/ideas.
 
+npm run build
+
 ## Resources:
 
 - [Chrome Extension (MV3) Boilerplate with React 18 and Webpack 5](https://github.com/lxieyang/chrome-extension-boilerplate-react)
